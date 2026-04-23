@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+/* ============================================================
+ * Adobe Analytics Health Monitor — design tokens
+ * Source of truth for the framework: docs/design/design-framework.md
+ * Light + dark mode are co-equal. No "dark = inverted light."
+ * ============================================================ */
+
+@theme {
+  /* Typography */
+  --font-sans: "Geist", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 9999px;
+}
+
+/* ------------------------------------------------------------
+ * Base palette — raw values, NOT consumed directly by components.
+ * Components read semantic tokens (below). Only the semantic
+ * layer flips between light and dark.
+ * ------------------------------------------------------------ */
+:root {
+  /* Cream / paper / ink — light field */
+  --cream-50: #fbf8f1;
+  --cream-100: #f5efe2;
+  --cream-200: #ebe3d0;
+  --paper-50: #ffffff;
+  --ink-900: #12110f;
+  --ink-800: #1e1d1a;
+  --ink-700: #2a2925;
+  --ink-600: #3b3a35;
+  --ink-200: #9d9a92;
+
+  /* Brand accent — preserved across modes (slightly desaturated in dark) */
+  --amber-200: #f6e9a5;
+  --amber-500: #e9c94a;
+  --amber-600: #d4b43a;
+
+  /* Status — muted, grown-up */
+  --status-healthy-light: #4b7a52;
+  --status-healthy-dark: #7faf86;
+  --status-watch-light: #c08a3e;
+  --status-watch-dark: #e0a65a;
+  --status-investigating-light: #2e5c8a;
+  --status-investigating-dark: #6aa3dd;
+  --status-degraded-light: #b8632a;
+  --status-degraded-dark: #e58a4f;
+  --status-critical-light: #a8322c;
+  --status-critical-dark: #d46a63;
+}
+
+/* ------------------------------------------------------------
+ * Semantic tokens — light mode (default)
+ * Components consume these via `var(--bg-field)` etc., or via
+ * Tailwind utilities mapped below in @theme.
+ * ------------------------------------------------------------ */
+:root {
+  --bg-field: var(--cream-50);
+  --bg-card-soft: var(--cream-100);
+  --bg-card-paper: var(--paper-50);
+  --bg-card-contrast: var(--ink-900);
+  --bg-accent-tint: var(--amber-200);
+
+  --fg-primary: var(--ink-900);
+  --fg-secondary: var(--ink-200);
+  --fg-on-contrast: var(--cream-50);
+  --fg-on-accent: var(--ink-900);
+
+  --hairline: var(--cream-200);
+  --focus-ring: var(--amber-500);
+
+  --status-healthy: var(--status-healthy-light);
+  --status-watch: var(--status-watch-light);
+  --status-investigating: var(--status-investigating-light);
+  --status-degraded: var(--status-degraded-light);
+  --status-critical: var(--status-critical-light);
+}
+
+/* ------------------------------------------------------------
+ * Semantic tokens — dark mode
+ * Activated by [data-theme="dark"] on <html>.
+ * Field is warm charcoal (NOT pure black). Contrast cards stay
+ * deepest black to keep their anchor role.
+ * ------------------------------------------------------------ */
+[data-theme="dark"] {
+  --bg-field: var(--ink-800);
+  --bg-card-soft: var(--ink-700);
+  --bg-card-paper: var(--ink-700);
+  --bg-card-contrast: var(--ink-900);
+  --bg-accent-tint: rgb(233 201 74 / 0.15);
+
+  --fg-primary: var(--cream-50);
+  --fg-secondary: var(--ink-200);
+  --fg-on-contrast: var(--cream-50);
+  --fg-on-accent: var(--ink-900);
+
+  --hairline: var(--ink-600);
+  --focus-ring: var(--amber-500);
+
+  --status-healthy: var(--status-healthy-dark);
+  --status-watch: var(--status-watch-dark);
+  --status-investigating: var(--status-investigating-dark);
+  --status-degraded: var(--status-degraded-dark);
+  --status-critical: var(--status-critical-dark);
+}
+
+/* ------------------------------------------------------------
+ * Tailwind v4 @theme — map semantic tokens to utility classes.
+ * Use bg-field, bg-card-soft, text-primary, etc. in components.
+ * ------------------------------------------------------------ */
+@theme inline {
+  --color-field: var(--bg-field);
+  --color-card-soft: var(--bg-card-soft);
+  --color-card-paper: var(--bg-card-paper);
+  --color-card-contrast: var(--bg-card-contrast);
+  --color-accent-tint: var(--bg-accent-tint);
+
+  --color-primary: var(--fg-primary);
+  --color-secondary: var(--fg-secondary);
+  --color-on-contrast: var(--fg-on-contrast);
+  --color-on-accent: var(--fg-on-accent);
+
+  --color-hairline: var(--hairline);
+  --color-amber: var(--amber-500);
+  --color-amber-hover: var(--amber-600);
+
+  --color-status-healthy: var(--status-healthy);
+  --color-status-watch: var(--status-watch);
+  --color-status-investigating: var(--status-investigating);
+  --color-status-degraded: var(--status-degraded);
+  --color-status-critical: var(--status-critical);
+}
+
+/* ------------------------------------------------------------
+ * Base resets and globals
+ * ------------------------------------------------------------ */
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--bg-field);
+    color: var(--fg-primary);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Critical-state pulse — the only ambient motion permitted.
+   * Used by StatusGlyph when severity = critical.
+   * Respects prefers-reduced-motion. */
+  @keyframes critical-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+  }
+
+  .pulse-critical {
+    animation: critical-pulse 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-critical {
+      animation: none;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  /* Focus ring — visible in both modes. */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}

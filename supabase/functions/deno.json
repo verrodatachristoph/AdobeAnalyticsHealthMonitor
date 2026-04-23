@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "@supabase/supabase-js": "jsr:@supabase/supabase-js@2"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.ns", "deno.window"]
+  },
+  "fmt": {
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": false
+  }
+}
