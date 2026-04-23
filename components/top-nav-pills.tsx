@@ -28,7 +28,7 @@ export function TopNavPills({ items }: Props) {
   return (
     <nav
       aria-label="Primary"
-      className="sticky top-6 z-40 mx-auto flex w-fit items-center gap-1 rounded-full border border-hairline bg-card-paper/80 p-1 backdrop-blur-md"
+      className="z-40 flex w-fit items-center gap-1 rounded-full border border-hairline bg-card-paper/80 p-1 backdrop-blur-md"
     >
       {items.map((item) => {
         const isActive = matchesRoute(pathname, item.href);

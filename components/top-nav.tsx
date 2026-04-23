@@ -1,4 +1,6 @@
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getSessionWithRole, isAgencyRole } from "@/lib/auth/require-role";
+import { loadTheme } from "@/lib/queries/preferences";
 import type { Route } from "next";
 import { TopNavPills, type NavItem } from "./top-nav-pills";
 
@@ -11,7 +13,10 @@ import { TopNavPills, type NavItem } from "./top-nav-pills";
 // right-side utility pills (notifications / settings / avatar TBD).
 
 export async function TopNav() {
-  const session = await getSessionWithRole();
+  const [session, theme] = await Promise.all([
+    getSessionWithRole(),
+    loadTheme(),
+  ]);
   if (!session) return null;
 
   const items: NavItem[] = isAgencyRole(session.role)
@@ -28,5 +33,13 @@ export async function TopNav() {
         { label: "Your summary", href: "/summary" as Route },
       ];
 
-  return <TopNavPills items={items} />;
+  return (
+    <div className="flex items-center justify-between gap-4 pt-6">
+      <span className="rounded-full border border-hairline bg-card-paper px-4 py-2 text-sm font-medium tracking-tight text-primary">
+        Health Monitor
+      </span>
+      <TopNavPills items={items} />
+      <ThemeToggle initialTheme={theme} />
+    </div>
+  );
 }
